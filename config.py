@@ -26,3 +26,7 @@ SCORING_WEIGHTS = {
 # Output settings
 OUTPUT_DIR = "output"
 TEMPLATE_DIR = "templates"
+
+# AI Summarization settings
+AI_SUMMARIES_ENABLED = True  # Set to False to disable AI summaries
+AI_MAX_WORKERS = 5  # Number of parallel API calls for summarization

@@ -314,6 +314,76 @@
             color: #999;
         }
         
+        .ai-summary {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 4px solid #667eea;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 500;
+            color: #1d1d1f;
+            line-height: 1.5;
+        }
+        
+        .ai-summary::before {
+            content: "✨ ";
+            font-size: 1.1em;
+        }
+        
+        .trending-explanation {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #5d4037;
+            line-height: 1.6;
+        }
+        
+        .trending-explanation::before {
+            content: "🔥 Why it's trending: ";
+            font-weight: 600;
+            color: #e65100;
+        }
+        
+        .copy-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        
+        .copy-button:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+        
+        .copy-button:active {
+            transform: scale(0.98);
+        }
+        
+        .copy-button.copied {
+            background: #34c759;
+        }
+        
+        .copy-button::before {
+            content: "📋";
+        }
+        
+        .copy-button.copied::before {
+            content: "✓";
+        }
+        
         @media (max-width: 768px) {
             header h1 {
                 font-size: 1.8em;
@@ -399,9 +469,16 @@
                                 {% endif %}
                             </div>
                         </div>
+                        {% if item.ai_summary %}
+                        <div class="ai-summary">{{ item.ai_summary }}</div>
+                        {% endif %}
+                        {% if item.ai_trending_reason %}
+                        <div class="trending-explanation">{{ item.ai_trending_reason }}</div>
+                        {% endif %}
                         {% if item.description %}
                         <div class="item-description">{{ item.description }}</div>
                         {% endif %}
+                        <button class="copy-button" onclick="copyToClipboard(this, '{{ item.name }}', '{{ item.ai_summary|replace("'", "\\'") }}', '{{ item.url }}')">Copy Summary</button>
                         {% if item.topics %}
                         <div class="topic-tags">
                             {% for topic in item.topics[:5] %}
@@ -450,9 +527,16 @@
                                 <span class="context-badge">📦 Curated</span>
                             </div>
                         </div>
+                        {% if item.ai_summary %}
+                        <div class="ai-summary">{{ item.ai_summary }}</div>
+                        {% endif %}
+                        {% if item.ai_trending_reason %}
+                        <div class="trending-explanation">{{ item.ai_trending_reason }}</div>
+                        {% endif %}
                         {% if item.description %}
                         <div class="item-description">{{ item.description }}</div>
                         {% endif %}
+                        <button class="copy-button" onclick="copyToClipboard(this, '{{ item.name }}', '{{ item.ai_summary|replace("'", "\\'") }}', '{{ item.url }}')">Copy Summary</button>
                     </div>
                     {% endfor %}
                 </div>
@@ -491,9 +575,16 @@
                         {% if item.arxiv_id %}
                         <span class="arxiv-badge">arXiv:{{ item.arxiv_id }}</span>
                         {% endif %}
+                        {% if item.ai_summary %}
+                        <div class="ai-summary">{{ item.ai_summary }}</div>
+                        {% endif %}
+                        {% if item.ai_trending_reason %}
+                        <div class="trending-explanation">{{ item.ai_trending_reason }}</div>
+                        {% endif %}
                         {% if item.description %}
                         <div class="item-description">{{ item.description }}</div>
                         {% endif %}
+                        <button class="copy-button" onclick="copyToClipboard(this, '{{ item.name }}', '{{ item.ai_summary|replace("'", "\\'") }}', '{{ item.url }}')">Copy Summary</button>
                         <div class="item-meta">
                             <span class="context-badge">📄 Research Paper</span>
                         </div>
@@ -532,9 +623,16 @@
                                 {% endif %}
                             </div>
                         </div>
+                        {% if item.ai_summary %}
+                        <div class="ai-summary">{{ item.ai_summary }}</div>
+                        {% endif %}
+                        {% if item.ai_trending_reason %}
+                        <div class="trending-explanation">{{ item.ai_trending_reason }}</div>
+                        {% endif %}
                         {% if item.description %}
                         <div class="item-description">{{ item.description }}</div>
                         {% endif %}
+                        <button class="copy-button" onclick="copyToClipboard(this, '{{ item.name }}', '{{ item.ai_summary|replace("'", "\\'") }}', '{{ item.url }}')">Copy Summary</button>
                         <div class="item-meta">
                             <span class="context-badge">🚀 Interactive Demo</span>
                             {% if item.sdk %}
@@ -567,8 +665,41 @@
                     AI Builder & Speaker
                 </p>
                 <a href="https://yuv.ai" target="_blank" class="creator-link">🌐 YUV.AI</a>
+                <div style="margin-top: 15px; font-size: 0.9em; line-height: 1.8;">
+                    <a href="https://linktr.ee/yuvai" target="_blank" style="color: #667eea; text-decoration: none; margin: 0 8px;">🔗 Linktree</a> •
+                    <a href="https://instagram.com/yuval_770" target="_blank" style="color: #667eea; text-decoration: none; margin: 0 8px;">📷 Instagram</a> •
+                    <a href="https://x.com/yuvalav" target="_blank" style="color: #667eea; text-decoration: none; margin: 0 8px;">𝕏 Twitter</a> •
+                    <a href="https://github.com/hoodini" target="_blank" style="color: #667eea; text-decoration: none; margin: 0 8px;">💻 GitHub</a> •
+                    <a href="https://youtube.com/@yuv-ai" target="_blank" style="color: #667eea; text-decoration: none; margin: 0 8px;">📺 YouTube</a> •
+                    <a href="https://tiktok.com/@yuval.ai" target="_blank" style="color: #667eea; text-decoration: none; margin: 0 8px;">🎵 TikTok</a>
+                </div>
             </div>
         </footer>
     </div>
+    
+    <script>
+        function copyToClipboard(button, name, summary, url) {
+            const text = `${name}\n${summary}\n${url}`;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Change button text and style
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                button.textContent = 'Failed to copy';
+                setTimeout(() => {
+                    button.textContent = 'Copy Summary';
+                }, 2000);
+            });
+        }
+    </script>
 </body>
 </html>

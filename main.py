@@ -40,7 +40,13 @@ import config
     is_flag=True,
     help='Open the generated HTML file in browser'
 )
-def main(time_range, days, output, limit, open_browser):
+@click.option(
+    '--no-ai',
+    'disable_ai',
+    is_flag=True,
+    help='Disable AI-powered summaries and explanations'
+)
+def main(time_range, days, output, limit, open_browser, disable_ai):
     """
     Gen AI News Aggregator - Stay updated with the latest in Gen AI and ML
     
@@ -66,7 +72,10 @@ def main(time_range, days, output, limit, open_browser):
     github_explore = GitHubExploreFetcher()
     hf_fetcher = HuggingFaceFetcher()
     ranker = ContentRanker()
-    generator = DigestGenerator()
+    
+    # Initialize generator with AI summaries unless disabled
+    use_ai = config.AI_SUMMARIES_ENABLED and not disable_ai
+    generator = DigestGenerator(use_ai_summaries=use_ai)
     
     all_items = []
     
