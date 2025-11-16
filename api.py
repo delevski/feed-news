@@ -114,6 +114,41 @@ def fetch_all_news(time_range='daily', limit=30):
         }
 
 
+@app.route('/', methods=['GET'])
+def root():
+    """Root endpoint - API documentation"""
+    return jsonify({
+        'service': 'Ori AI Developers AI Trends API',
+        'version': '1.0.0',
+        'status': 'running',
+        'endpoints': {
+            'health': '/api/health',
+            'news': '/api/news?range=daily&limit=30',
+            'repos': '/api/news/repos',
+            'papers': '/api/news/papers',
+            'spaces': '/api/news/spaces'
+        },
+        'documentation': 'https://github.com/delevski/feed-news',
+        'timestamp': datetime.now().isoformat()
+    })
+
+
+@app.route('/api', methods=['GET'])
+def api_root():
+    """API root endpoint"""
+    return jsonify({
+        'service': 'Ori AI Developers AI Trends API',
+        'version': '1.0.0',
+        'endpoints': {
+            'health': '/api/health',
+            'news': '/api/news?range=daily&limit=30',
+            'repos': '/api/news/repos',
+            'papers': '/api/news/papers',
+            'spaces': '/api/news/spaces'
+        }
+    })
+
+
 @app.route('/api/health', methods=['GET'])
 def health():
     """Health check endpoint"""
@@ -214,6 +249,35 @@ def get_spaces():
         return jsonify(result), 500
 
 
+@app.errorhandler(404)
+def not_found(error):
+    """Handle 404 errors"""
+    return jsonify({
+        'success': False,
+        'error': 'Endpoint not found',
+        'message': 'The requested URL was not found on this server',
+        'available_endpoints': {
+            'root': '/',
+            'api_root': '/api',
+            'health': '/api/health',
+            'news': '/api/news?range=daily&limit=30',
+            'repos': '/api/news/repos',
+            'papers': '/api/news/papers',
+            'spaces': '/api/news/spaces'
+        }
+    }), 404
+
+
+@app.errorhandler(500)
+def internal_error(error):
+    """Handle 500 errors"""
+    return jsonify({
+        'success': False,
+        'error': 'Internal server error',
+        'message': 'An unexpected error occurred'
+    }), 500
+
+
 if __name__ == '__main__':
     # Set API key from environment
     if COHERE_API_KEY:
@@ -222,6 +286,8 @@ if __name__ == '__main__':
     print("🚀 Starting Ori AI Developers AI Trends API...")
     print("📍 API will be available at: http://localhost:5000")
     print("\n📋 Available endpoints:")
+    print("   GET / - API documentation")
+    print("   GET /api - API root")
     print("   GET /api/health - Health check")
     print("   GET /api/news?range=daily&limit=30 - Get all news")
     print("   GET /api/news/repos - Get only repos")
