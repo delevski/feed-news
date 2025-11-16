@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsFeed - Ori AI Developers AI Trends</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0066cc;
+        }
+
+        .search-box {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 10px 16px;
+            width: 320px;
+            border: none;
+            font-size: 14px;
+        }
+
+        .search-box::placeholder {
+            color: #86868b;
+        }
+
+        .top-bar-right {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .notification-icon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            gap: 24px;
+            padding: 24px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* Left Sidebar */
+        .left-sidebar {
+            width: 220px;
+            padding-top: 12px;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 102, 204, 0.08);
+        }
+
+        .nav-item.active {
+            background: rgba(0, 102, 204, 0.12);
+            font-weight: 600;
+            color: #0066cc;
+        }
+
+        /* Center Feed */
+        .center-feed {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #86868b;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #0066cc;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.3s;
+        }
+
+        .news-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .card-meta {
+            flex: 1;
+        }
+
+        .card-source {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .card-time {
+            font-size: 12px;
+            color: #86868b;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .card-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .card-title a:hover {
+            color: #0066cc;
+        }
+
+        .card-description {
+            font-size: 15px;
+            color: #515154;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            background: #f5f5f7;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #515154;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 16px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            font-size: 13px;
+            color: #86868b;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 24px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            cursor: pointer;
+            font-size: 14px;
+            color: #515154;
+            transition: all 0.2s;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .action-btn:hover {
+            color: #0066cc;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            width: 240px;
+        }
+
+        .sidebar-section {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            margin-bottom: 16px;
+        }
+
+        .sidebar-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .topic-item {
+            padding: 8px 0;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .topic-item:hover {
+            color: #0066cc;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            font-size: 14px;
+        }
+
+        .filter-tab:hover {
+            background: #f5f5f7;
+        }
+
+        .filter-tab.active {
+            background: #0066cc;
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .right-sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .left-sidebar {
+                display: none;
+            }
+            
+            .search-box {
+                width: 200px;
+            }
+
+            .main-layout {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="logo">NewsFeed</div>
+        <input type="text" class="search-box" placeholder="Search news..." id="searchInput">
+        <div class="top-bar-right">
+            <span class="notification-icon">🔔</span>
+            <div class="avatar"></div>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="nav-item active" data-filter="all">Home</div>
+            <div class="nav-item" data-filter="github">GitHub Repos</div>
+            <div class="nav-item" data-filter="paper">Papers</div>
+            <div class="nav-item" data-filter="space">Spaces</div>
+            <div class="nav-item">Bookmarks</div>
+            <div class="nav-item">Settings</div>
+        </div>
+
+        <!-- Center Feed -->
+        <div class="center-feed">
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-range="daily">Daily</button>
+                <button class="filter-tab" data-range="weekly">Weekly</button>
+                <button class="filter-tab" data-range="monthly">Monthly</button>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Loading latest AI news...</p>
+            </div>
+
+            <!-- News Feed -->
+            <div id="newsFeed"></div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Suggested Topics</div>
+                <div class="topic-item">🔹 AI</div>
+                <div class="topic-item">🔹 Machine Learning</div>
+                <div class="topic-item">🔹 Deep Learning</div>
+                <div class="topic-item">🔹 LLM</div>
+                <div class="topic-item">🔹 Generative AI</div>
+                <div class="topic-item">🔹 Startups</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Quick Stats</div>
+                <div id="statsContent">
+                    <p style="color: #86868b;">Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRange = 'daily';
+        let currentFilter = 'all';
+        let allItems = [];
+
+        // API Base URL (change for production)
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : '';
+
+        // Fetch news data
+        async function fetchNews(range = 'daily', limit = 50) {
+            try {
+                const response = await fetch(`${API_BASE}/api/news?range=${range}&limit=${limit}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    allItems = data.data.all_items;
+                    updateStats(data.stats);
+                    renderNews(allItems);
+                } else {
+                    document.getElementById('loading').innerHTML = '<p>Error loading news. Please try again.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                document.getElementById('loading').innerHTML = '<p>Error connecting to API. Please check if the server is running.</p>';
+            }
+        }
+
+        // Render news items
+        function renderNews(items) {
+            const feed = document.getElementById('newsFeed');
+            const loading = document.getElementById('loading');
+            
+            loading.style.display = 'none';
+            
+            if (!items || items.length === 0) {
+                feed.innerHTML = '<p style="text-align: center; color: #86868b;">No news items found.</p>';
+                return;
+            }
+
+            feed.innerHTML = items.map(item => createNewsCard(item)).join('');
+        }
+
+        // Create news card HTML
+        function createNewsCard(item) {
+            const sourceIcon = getSourceIcon(item.source);
+            const sourceName = getSourceName(item.source);
+            const timeAgo = getTimeAgo(item.fetched_at);
+            const tags = getItemTags(item);
+            
+            return `
+                <div class="news-card">
+                    <div class="card-header">
+                        <div class="card-avatar">${sourceIcon}</div>
+                        <div class="card-meta">
+                            <div class="card-source">${sourceName}</div>
+                            <div class="card-time">${timeAgo}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-title">
+                        <a href="${item.url}" target="_blank">${item.name}</a>
+                    </div>
+                    
+                    ${item.description ? `<div class="card-description">${item.description}</div>` : ''}
+                    
+                    ${tags.length > 0 ? `
+                        <div class="card-tags">
+                            ${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="card-stats">
+                        ${item.stars ? `<div class="stat-item">⭐ ${formatNumber(item.stars)}</div>` : ''}
+                        ${item.upvotes ? `<div class="stat-item">👍 ${formatNumber(item.upvotes)}</div>` : ''}
+                        ${item.likes ? `<div class="stat-item">❤️ ${formatNumber(item.likes)}</div>` : ''}
+                        ${item.score ? `<div class="stat-item">📊 Score: ${item.score.toFixed(1)}</div>` : ''}
+                    </div>
+                    
+                    <div class="card-actions">
+                        <button class="action-btn">👍 Like</button>
+                        <button class="action-btn">↗️ Share</button>
+                        <button class="action-btn">🔖 Save</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Helper functions
+        function getSourceIcon(source) {
+            const icons = {
+                'github': '💻',
+                'huggingface_papers': '📄',
+                'huggingface_spaces': '🚀',
+                'github_collection': '📦'
+            };
+            return icons[source] || '📰';
+        }
+
+        function getSourceName(source) {
+            const names = {
+                'github': 'GitHub',
+                'huggingface_papers': 'Papers',
+                'huggingface_spaces': 'Spaces',
+                'github_collection': 'Collection'
+            };
+            return names[source] || 'News';
+        }
+
+        function getTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            
+            if (days > 0) return `${days}d ago`;
+            if (hours > 0) return `${hours}h ago`;
+            if (minutes > 0) return `${minutes}m ago`;
+            return 'Just now';
+        }
+
+        function getItemTags(item) {
+            const tags = [];
+            if (item.language) tags.push(item.language);
+            if (item.topics) tags.push(...item.topics.slice(0, 3));
+            if (item.sdk) tags.push(item.sdk);
+            return tags.slice(0, 5);
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        function updateStats(stats) {
+            const statsContent = document.getElementById('statsContent');
+            statsContent.innerHTML = `
+                <div style="margin-bottom: 8px;">📊 <strong>${stats.github_repos_count}</strong> Repos</div>
+                <div style="margin-bottom: 8px;">📄 <strong>${stats.papers_count}</strong> Papers</div>
+                <div style="margin-bottom: 8px;">🚀 <strong>${stats.spaces_count}</strong> Spaces</div>
+            `;
+        }
+
+        // Filter by source type
+        function filterItems(filterType) {
+            currentFilter = filterType;
+            
+            if (filterType === 'all') {
+                renderNews(allItems);
+            } else {
+                const filtered = allItems.filter(item => item.source.includes(filterType));
+                renderNews(filtered);
+            }
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentRange = this.dataset.range;
+                fetchNews(currentRange, 50);
+            });
+        });
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                if (this.dataset.filter) {
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    filterItems(this.dataset.filter);
+                }
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            if (query) {
+                const filtered = allItems.filter(item => 
+                    item.name.toLowerCase().includes(query) ||
+                    (item.description && item.description.toLowerCase().includes(query))
+                );
+                renderNews(filtered);
+            } else {
+                filterItems(currentFilter);
+            }
+        });
+
+        // Initial load
+        fetchNews('daily', 50);
+    </script>
+</body>
+</html>
+

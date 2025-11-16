@@ -13,6 +13,14 @@ import config
 
 app = Flask(__name__)
 
+# Enable CORS for API endpoints
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
 # Set COHERE_API_KEY from environment
 COHERE_API_KEY = os.environ.get('COHERE_API_KEY', 'vFEFFraWFP4wCCPXitxfrrwkbNPzZWrs7WA7Uumf')
 
@@ -116,7 +124,16 @@ def fetch_all_news(time_range='daily', limit=30):
 
 @app.route('/', methods=['GET'])
 def root():
-    """Root endpoint - API documentation"""
+    """Serve the web UI"""
+    from flask import send_file
+    import os
+    
+    # Check if index.html exists
+    index_path = os.path.join(os.path.dirname(__file__), 'index.html')
+    if os.path.exists(index_path):
+        return send_file(index_path)
+    
+    # Fallback to API documentation
     return jsonify({
         'service': 'Ori AI Developers AI Trends API',
         'version': '1.0.0',
