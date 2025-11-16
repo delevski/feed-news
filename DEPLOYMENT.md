@@ -68,17 +68,28 @@ curl "https://your-project.vercel.app/api/news/repos"
   "version": 2,
   "builds": [
     {
-      "src": "api.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api.py"
+      "dest": "api/index.py"
     }
   ]
 }
+```
+
+### Project Structure for Vercel
+```
+├── api/
+│   └── index.py       # Vercel entry point (imports from api.py)
+├── api.py             # Main Flask application
+├── fetchers.py        # Data fetchers
+├── ranker.py          # Ranking logic
+├── config.py          # Configuration
+└── vercel.json        # Vercel configuration
 ```
 
 ### Environment Variables
