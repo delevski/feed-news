@@ -93,24 +93,26 @@ class AIContentSummarizer:
         
         context = '\n'.join(context_info)
         
-        prompt = f"""You are analyzing trending AI/ML content. Generate:
+        prompt = f"""You are analyzing trending AI/ML content. Based ONLY on the provided information below, generate:
 
-1. A single concise sentence (max 15 words) summarizing what this project/paper/space does
-2. A brief explanation (2-3 sentences) of why it's trending and what makes it exciting or innovative
+1. A single concise sentence (max 15 words) summarizing what this project/paper/space does - base this ONLY on the actual description and context provided
+2. A brief explanation (2-3 sentences) of why it's trending based on the metrics (stars, upvotes, likes) and what the description indicates is new or innovative - DO NOT make up features or capabilities not mentioned in the description
 
 Project: {name}
 Description: {description}
 Context: {context}
 
+IMPORTANT: Only describe what is explicitly stated in the description and context. Do not invent or assume features, capabilities, or purposes not mentioned above.
+
 Format your response as:
-SUMMARY: [one sentence]
-TRENDING: [2-3 sentences explaining why it's trending and what's new/exciting]"""
+SUMMARY: [one sentence based only on provided description]
+TRENDING: [2-3 sentences explaining why based only on the metrics and description provided]"""
 
         try:
             if self.provider == "cohere":
-                # Use Cohere API (using command-r-plus which is available)
+                # Use Cohere API
                 response = self.client.chat(
-                    model="command-r-plus",
+                    model="command-a-03-2025",
                     messages=[{"role": "user", "content": prompt}],
                     max_tokens=200
                 )
