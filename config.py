@@ -1,4 +1,4 @@
-"""Configuration settings for the Gen AI News Aggregator"""
+"""Configuration settings for the Ori AI Developers AI Trends"""
 
 # GitHub settings
 GITHUB_TRENDING_URL = "https://github.com/trending"

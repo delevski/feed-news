@@ -1,4 +1,4 @@
-# 🤖 YUV.AI Developers AI Trends
+# 🤖 Ori AI Developers AI Trends
 
 > **Stay ahead of the curve with curated Gen AI & Machine Learning trends, delivered in a beautiful digest with AI-powered summaries.**
 

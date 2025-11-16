@@ -53,7 +53,7 @@ def main(time_range, days, output, limit, open_browser, disable_ai):
     Fetches trending content from GitHub and Hugging Face, ranks it,
     and generates a beautiful HTML digest.
     """
-    click.echo("🤖 Gen AI News Aggregator")
+    click.echo("🤖 Ori AI Developers AI Trends")
     click.echo("=" * 50)
     
     # Determine time range
